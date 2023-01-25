@@ -63,9 +63,11 @@ namespace Meshkah.Controllers
         {
             if (ModelState.IsValid)
             {
+                Point point = await _context.Points.FirstAsync(p => p.Id == model.PointId);
                 foreach(int user in model.Selected_Users)
                 {
-                    _context.Add(new PointsTransaction() { PointId= model.PointId, UserId = user});
+                    var i = _context.Add(new PointsTransaction() { PointId= model.PointId, UserId = user});
+                    _context.Add(new MoneyMovement() { PointId= model.PointId, UserId = user, Amount = point.Amount.Value});
                 }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
