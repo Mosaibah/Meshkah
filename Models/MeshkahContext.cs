@@ -27,6 +27,8 @@ public partial class MeshkahContext : DbContext
 
     public virtual DbSet<PointsTransaction> PointsTransactions { get; set; }
 
+    public virtual DbSet<PonitType> PonitTypes { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -103,6 +105,10 @@ public partial class MeshkahContext : DbContext
         modelBuilder.Entity<Point>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Points_pkey");
+
+            entity.HasOne(d => d.Type).WithMany(p => p.Points)
+                .HasForeignKey(d => d.TypeId)
+                .HasConstraintName("points_pointTypes_fk");
         });
 
         modelBuilder.Entity<PointsTransaction>(entity =>
@@ -120,6 +126,11 @@ public partial class MeshkahContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.PointsTransactions)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("pointTransaction_user_fk");
+        });
+
+        modelBuilder.Entity<PonitType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PonitTypes_pkey");
         });
 
         modelBuilder.Entity<Role>(entity =>

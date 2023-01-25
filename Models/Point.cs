@@ -16,4 +16,6 @@ public partial class Point
     public virtual ICollection<MoneyMovement> MoneyMovements { get; } = new List<MoneyMovement>();
 
     public virtual ICollection<PointsTransaction> PointsTransactions { get; } = new List<PointsTransaction>();
+
+    public virtual PonitType? Type { get; set; }
 }
