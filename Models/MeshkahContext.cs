@@ -47,9 +47,9 @@ public partial class MeshkahContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Group_pkey");
 
-            entity.ToTable("Group");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Group_Id_seq\"'::regclass)");
 
-            entity.HasOne(d => d.GroupType).WithMany(p => p.Groups)
+            entity.HasOne(d => d.Type).WithMany(p => p.Groups)
                 .HasForeignKey(d => d.GroupTypeId)
                 .HasConstraintName("group_groupType");
         });
@@ -58,15 +58,14 @@ public partial class MeshkahContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("GroupType_pkey");
 
-            entity.ToTable("GroupType");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"GroupType_Id_seq\"'::regclass)");
         });
 
         modelBuilder.Entity<MoneyMovement>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("MoneyMovement_pkey");
 
-            entity.ToTable("MoneyMovement");
-
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"MoneyMovement_Id_seq\"'::regclass)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.MoneyTransaction).WithMany(p => p.MoneyMovements)
@@ -87,8 +86,7 @@ public partial class MeshkahContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("MoneyTransaction_pkey");
 
-            entity.ToTable("MoneyTransaction");
-
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"MoneyTransaction_Id_seq\"'::regclass)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.FromUser).WithMany(p => p.MoneyTransactionFromUsers)
@@ -137,14 +135,14 @@ public partial class MeshkahContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Role_pkey");
 
-            entity.ToTable("Role");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Role_Id_seq\"'::regclass)");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("User_pkey");
 
-            entity.ToTable("User");
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"User_Id_seq\"'::regclass)");
         });
 
         modelBuilder.Entity<UserGroupMapping>(entity =>
