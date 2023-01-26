@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Meshkah.ViewModels;
 
 namespace Meshkah.Models;
 
@@ -49,7 +50,7 @@ public partial class MeshkahContext : DbContext
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Group_Id_seq\"'::regclass)");
 
-            entity.HasOne(d => d.Type).WithMany(p => p.Groups)
+            entity.HasOne(d => d.GroupType).WithMany(p => p.Groups)
                 .HasForeignKey(d => d.GroupTypeId)
                 .HasConstraintName("group_groupType");
         });
@@ -181,4 +182,6 @@ public partial class MeshkahContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public DbSet<Meshkah.ViewModels.AuthVM> SignUpVM { get; set; }
 }

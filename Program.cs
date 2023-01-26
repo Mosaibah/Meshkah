@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Meshkah.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,18 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+   .AddCookie(options =>
+   {
+       // options.AccessDeniedPath = "/Forbidden/";
+       options.LoginPath = "/Auth/Login";
+
+   });
+
 
 var app = builder.Build();
 
@@ -20,6 +33,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+
 
 app.UseAuthorization();
 

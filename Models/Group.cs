@@ -11,7 +11,7 @@ public partial class Group
 
     public int? GroupTypeId { get; set; }
 
-    public virtual GroupType? Type { get; set; }
+    public virtual GroupType? GroupType { get; set; }
 
     public virtual ICollection<UserGroupMapping> UserGroupMappings { get; } = new List<UserGroupMapping>();
 }

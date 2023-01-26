@@ -19,27 +19,17 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Points" asp-action="Index">البنود</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PointsTransactions" asp-action="Index">توزيع نقاط</a>
-                        </li>
-                        @if(User.IsInRole("Admin"))
+                        </li>*@
+                        @if(User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">المستخدمين</a>
-                            </li>    
+                                <a class="btn btn-sm btn-outline-danger"  asp-controller="Auth" asp-action="Logout">تسجيل خروج</a>
+                            </li>
+                            <li>منور @User.FindFirst("Name").Value</li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Groups" asp-action="Index">المجموعات</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GroupTypes" asp-action="Index">أنواع المجموعة</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-danger" asp-area="" asp-controller="Auth" asp-action="Logout">تسجيل خروج</a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>

@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Meshkah.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Meshkah.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin")]
     public class GroupsController : Controller
     {
         private readonly MeshkahContext _context;
@@ -21,7 +25,7 @@ namespace Meshkah.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            var meshkahContext = _context.Groups.Include(c => c.Type);
+            var meshkahContext = _context.Groups.Include(c => c.GroupType);
             return View(await meshkahContext.ToListAsync());
         }
 
@@ -34,7 +38,7 @@ namespace Meshkah.Controllers
             }
 
             var group = await _context.Groups
-                .Include(c => c.Type)
+                .Include(c => c.GroupType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (group == null)
             {
@@ -130,7 +134,7 @@ namespace Meshkah.Controllers
             }
 
             var group = await _context.Groups
-                .Include(c => c.Type)
+                .Include(c => c.GroupType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (group == null)
             {

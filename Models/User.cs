@@ -9,6 +9,12 @@ public partial class User
 
     public string? Name { get; set; }
 
+    public string? Email { get; set; }
+
+    public string? Password { get; set; }
+
+    public bool IsActive { get; set; }
+
     public virtual ICollection<MoneyMovement> MoneyMovements { get; } = new List<MoneyMovement>();
 
     public virtual ICollection<MoneyTransaction> MoneyTransactionFromUsers { get; } = new List<MoneyTransaction>();
