@@ -30,6 +30,7 @@ namespace Meshkah.Controllers
              return View(users);
         }
 
+        #region Details 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,7 +48,9 @@ namespace Meshkah.Controllers
 
             return View(user);
         }
+        #endregion
 
+        #region GET: Create
         // GET: Users/Create
         public IActionResult Create()
         {
@@ -55,17 +58,31 @@ namespace Meshkah.Controllers
             ViewData["Roles"] = new MultiSelectList(_context.Roles, "Id", "Name");
             return View();
         }
+        #endregion
 
+        #region POST: Create
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name, Selected_Groups, Selected_Roles")] CreateUserVM model)
+        public async Task<IActionResult> Create([Bind("Id,Name, Selected_Groups, Selected_Roles, Email, Password")] CreateUserVM model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User() { Name = model.Name };
+                var IsEmailUnique = _context.Users.Where(c => c.Email == model.Email).Any();
+                if (IsEmailUnique)
+                {
+                    ViewData["Message"] = "البريد الالكتروني مسجل بالفعل";
+                    return View(model);
+                }
+
+                User user = new User() 
+                { 
+                    Name = model.Name,
+                    Email = model.Email, 
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password) 
+                };
                 _context.Add(user);
                 await _context.SaveChangesAsync();
 
@@ -83,7 +100,9 @@ namespace Meshkah.Controllers
             }
             return View(model);
         }
+        #endregion
 
+        #region GET: Edit
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -107,15 +126,17 @@ namespace Meshkah.Controllers
             ViewData["Groups"] = new MultiSelectList(groups, "Id", "Name", selectedGroups);
             ViewData["Roles"] = new MultiSelectList(roles, "Id", "Name", selectedRoles);
 
-            return View(new CreateUserVM() { Id = id.Value, Name = user.Name});
+            return View(new CreateUserVM() { Id = id.Value, Name = user.Name, Email = user.Email});
         }
-
+        #endregion
+        
+        #region POST: Edit
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, Selected_Groups, Selected_Roles")] CreateUserVM model)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, Selected_Groups, Selected_Roles, Email, Password")] CreateUserVM model)
         {
             if (id != model.Id)
             {
@@ -126,7 +147,13 @@ namespace Meshkah.Controllers
             {
                 try
                 {
-                    _context.Update(new User() { Id = id, Name = model.Name});
+
+                    var updatedUser = new User() { Id = id, Name = model.Name, Email = model.Email };
+                    if(model.Password is not null)
+                    {
+                        updatedUser.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                    }
+                    _context.Update(updatedUser);
 
                     _context.UserGroupMappings.RemoveRange(_context.UserGroupMappings.Where(c => c.UserId == id));
                     _context.UserRoleMappings.RemoveRange(_context.UserRoleMappings.Where(c => c.UserId == id));
@@ -157,7 +184,9 @@ namespace Meshkah.Controllers
             }
             return View(model);
         }
-
+        #endregion
+        
+        #region GET: Delete
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -175,7 +204,9 @@ namespace Meshkah.Controllers
 
             return View(user);
         }
-
+        #endregion
+        
+        #region POST: Delete
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -194,10 +225,56 @@ namespace Meshkah.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
         private bool UserExists(int id)
         {
           return _context.Users.Any(e => e.Id == id);
         }
+
+        #region GET: PendingUser
+        public async Task<IActionResult> PendingUsers()
+        {
+           return View();
+        }
+        #endregion
+
+        #region GET: PendingUsersList 
+        public async Task<IActionResult> PendingUsersList()
+        {
+            List<int?> usersId = await _context.UserRoleMappings.Where(c => c.RoleId == 4).Select(c => c.UserId).ToListAsync();
+            var users = await _context.Users.Where(c => usersId.Contains(c.Id)).Select(c => new { c.Id, c.Name, c.Email }).ToListAsync();
+
+            return Json(new
+            {
+                data = users
+            });
+        }
+        #endregion
+
+        #region POST: AcceptUsers
+        public async Task<IActionResult> AcceptUsers(IFormCollection form)
+        {
+            List<int> usersIds = new();
+            var usersIds_str = form["users"].ToString().Split(',').ToList();
+
+            if (usersIds_str[0] == ""){ return RedirectToAction("BatchOrder");}
+
+            foreach (var id in usersIds_str)
+            {
+                usersIds.Add(Convert.ToInt32(id));
+            }
+            var roleId = Convert.ToInt32(Request.Form["role"]);
+
+            foreach(var userId in usersIds)
+            {
+                _context.UserRoleMappings.RemoveRange(_context.UserRoleMappings.Where(c => c.UserId == userId));
+                _context.Add(new UserRoleMapping() { UserId = userId, RoleId = roleId });
+            }
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(PendingUsers));
+        }
+        #endregion
     }
 }

@@ -1,0 +1,72 @@
+﻿
+<h3>Pending Users</h3>
+
+<table id="myTable"></table>
+
+<button id="try">click</button>
+
+<form class="row g-3" id="form" method="POST" asp-action="AcceptUsers">
+  <div class="col-auto">
+    <input hidden name="users" id="users"/>
+    <input hidden name="userRole" id="userRole"/>
+    <button type="submit" class="btn btn-primary mb-3" name="role" value="3">قبول كطالب</button>
+    <button type="submit" class="btn btn-primary mb-3" name="role" value="2">قبول كمشرف</button>
+    <button type="submit" class="btn btn-primary mb-3" name="role" value="1">قبول كـ بتاع كلو</button>
+  </div>
+</form>
+
+@section scripts {
+
+<script>
+    $(document).ready(function () {
+        var table = $('#myTable').DataTable({
+            ajax: "/Users/PendingUsersList",
+            columns: [
+               
+                {
+                    name: "Id",
+                    data: "id",
+                    title: "رقم",
+                    sortable: false,
+                    searchable: false,
+                    className: "text-start"
+                },
+                {
+                    name: "Name",
+                    data: "name",
+                    title: "الاسم",
+                    sortable: false,
+                    searchable: false,
+                    className: "text-start"
+                },
+                {
+                    name: "Email",
+                    data: "email",
+                    title: "البريد",
+                    sortable: false,
+                    searchable: false,
+                    className: "text-start"
+                }
+            ],
+            select: {
+            style: 'multi'
+        }, 
+          
+
+        });
+
+
+      $('#form').on('submit', function (e) {
+                    var usersIds = table.rows( { selected: true } ).data().pluck("id").toArray()
+                    document.getElementById('users').value = usersIds
+
+                    var d = 2
+                    //document.getElementById('userRole').value = usersIds
+
+                });
+
+    });
+
+</script>
+
+}

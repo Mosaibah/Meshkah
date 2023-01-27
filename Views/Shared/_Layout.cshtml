@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Meshkah.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.5.0/css/select.dataTables.min.css"/>
+        @await RenderSectionAsync("style", required: false)
+
 </head>
 <body>
     <header>
@@ -38,6 +42,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="GroupTypes" asp-action="Index">أنواع المجموعة</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="PendingUsers">المعلقين</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="btn btn-outline-danger" asp-area="" asp-controller="Auth" asp-action="Logout">تسجيل خروج</a>
                         </li>
                     </ul>
@@ -59,6 +66,9 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/4.2.1/js/dataTables.fixedColumns.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.5.0/js/dataTables.select.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
