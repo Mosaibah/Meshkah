@@ -8,6 +8,9 @@ builder.Services.AddDbContext<MeshkahContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
