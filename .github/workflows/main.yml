@@ -34,7 +34,7 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.REMOTE_SSH_KEY }}
         port: 22
-        script: sudo systemctl stop Meshkah.service
+        script: stop Meshkah service
       
     - name: Copy to Server via SCP
       uses: garygrossgarten/github-action-scp@release
@@ -55,4 +55,4 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.REMOTE_SSH_KEY }}
         port: 22
-        script: sudo systemctl start Meshkah.service
+        script: start Meshkah service
