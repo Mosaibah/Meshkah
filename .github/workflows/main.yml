@@ -28,7 +28,7 @@ jobs:
       run: dotnet publish -c Release
       
     - name: Stop Meshkah Service
-      uses: garygrossgarten/github-action-ssh@v0.7.0
+      uses: garygrossgarten/github-action-ssh@0.7.0
       with:
         command: sudo systemctl stop Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
@@ -48,7 +48,7 @@ jobs:
         ASPNETCORE_ENVIRONMENT: Production
         
     - name: Start Meshkah Service
-      uses: garygrossgarten/github-action-ssh@v0.7.0
+      uses: garygrossgarten/github-action-ssh@0.7.0
       with:
         command: sudo systemctl start Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
