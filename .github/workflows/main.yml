@@ -30,7 +30,7 @@ jobs:
     - name: Stop Meshkah Service
       uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
-        command: service Meshkah stop
+        command: sudo systemctl stop Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
@@ -50,7 +50,7 @@ jobs:
     - name: Start Meshkah Service
       uses: garygrossgarten/github-action-ssh@v0.6.3
       with:
-        command: service Meshkah start
+        command: sudo systemctl start Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
