@@ -28,12 +28,13 @@ jobs:
       run: dotnet publish -c Release
       
     - name: Stop Meshkah Service
-      uses: garygrossgarten/github-action-ssh@0.7.0
+      uses: appleboy/ssh-action@v0.1.7
       with:
-        command: sudo systemctl stop Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
-        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+        key: ${{ secrets.REMOTE_SSH_KEY }}
+        port: 22
+        script: sudo systemctl stop Meshkah.service
       
     - name: Copy to Server via SCP
       uses: garygrossgarten/github-action-scp@release
@@ -47,10 +48,11 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Production
         
-    - name: Start Meshkah Service
-      uses: garygrossgarten/github-action-ssh@0.7.0
+    - name: start Meshkah Service
+      uses: appleboy/ssh-action@v0.1.7
       with:
-        command: sudo systemctl start Meshkah.service
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
-        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+        key: ${{ secrets.REMOTE_SSH_KEY }}
+        port: 22
+        script: sudo systemctl start Meshkah.service
