@@ -1,0 +1,56 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: DotNet Restore
+      run: dotnet restore
+    
+    - name: DotNet Build
+      run: dotnet build --no-restore
+  
+    - name: DotNet Publish
+      run: dotnet publish -c Release
+      
+    - name: Stop Meshkah Service
+      uses: garygrossgarten/github-action-ssh@v0.6.3
+      with:
+        command: sudo service Meshkah stop
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+      
+    - name: Copy to Server via SCP
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: /home/runner/work/Meshkah/Meshkah/Meshkah/bin/Release/net6.0/publish/
+        concurrency: 10
+        remote: ${{ secrets.REMOTE_TARGET }}
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+      env:
+        ASPNETCORE_ENVIRONMENT: Production
+        
+    - name: Start Meshkah Service
+      uses: garygrossgarten/github-action-ssh@v0.6.3
+      with:
+        command: sudo service Meshkah start
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
