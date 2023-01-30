@@ -7,3 +7,74 @@
 
 <p>PointsTotal = @ViewBag.PointsTotal</p>
 <p>MoneyTotal = @ViewBag.MoneyTotal</p>
+
+<h4>تاريخ النقاط</h4>
+<table class="table">
+    <tr>
+        <th>
+            البند
+        </th>
+        <th>
+            القيمة
+        </th>
+        <th>
+            التاريخ
+        </th>
+    </tr>
+    @foreach(var item in @ViewBag.pointsLog)
+    {
+        <tr>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Amount
+            </td>
+            <td>
+                @item.CreatedAt
+            </td>
+        </tr>
+    }
+</table>
+
+
+<h4>تاريخ المال</h4>
+<table class="table">
+    <tr>
+        <th>
+            المبلغ
+        </th>
+        <th>
+            البند
+        </th>
+        <th>
+            من
+        </th>
+        <th>
+            الى
+        </th>
+        <th>
+            التاريخ
+        </th>
+    </tr>
+    @foreach(var item in @ViewBag.moneyLog)
+    {
+        <tr>
+            <td>
+                @item.Amount
+            </td>
+            <td>
+                @item.PointName
+            </td>
+            <td>
+                @item.From
+            </td>
+            <td>
+                @item.To
+            </td>
+            <td>
+                @item.CreatedAt
+            </td>
+        </tr>
+    }
+</table>

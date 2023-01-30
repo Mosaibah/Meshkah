@@ -1,7 +1,9 @@
 ﻿using Meshkah.Models;
+using Meshkah.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -37,17 +39,46 @@ namespace Meshkah.Controllers
             var moneyTotal = await _context.MoneyMovements.Where(c => c.UserId == userId).SumAsync(c => c.Amount);
 
             var pointsLog = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId)
-                            .Select(c => new { Name = c.Point.Name, Amount = c.Point.Name, CreatedAt = c.CreatedAt }).ToListAsync();
+                            .Select(c => new { Name = c.Point.Name, Amount = c.Point.Amount, CreatedAt = c.CreatedAt }).ToListAsync();
 
             ViewData["pointsTotal"] = pointsTotal;
             ViewData["moneyTotal"] = moneyTotal;
 
-            //var moneylog = await _context.moneymovements.include(c => c.point).where(c => c.userid == userid)
-            //                .select(c => new { name = c.point.name, amount = c.point.name, createdat = c.createdat }).tolistasync();
+            var moneylog = await _context.MoneyMovements.Include(c => c.Point).Include(c => c.MoneyTransaction)
+                            .Where(c => c.UserId == userId)
+                            .Select(c => new { Amount = c.Amount,  PointName = c.Point.Name , From = c.MoneyTransaction.FromUserId.ToString(), To = c.MoneyTransaction.ToUserId.ToString(), CreatedAt = c.CreatedAt})
+                            .ToListAsync();
+            ViewData["pointsLog"] = pointsLog;
+            ViewData["moneyLog"] = moneylog;
 
 
 
             return View();
         }
+
+        public async Task<IActionResult> TransferMoney()
+        {
+            // get amount of user available
+            // get all students (id, name)
+
+            var availableAmount = await _context.MoneyMovements.Where(c => c.UserId == userId).SumAsync(c => c.Amount);
+
+            List<int?> usersId = await _context.UserRoleMappings.Where(c => c.RoleId == 3 && c.UserId != userId).Select(c => c.UserId).ToListAsync();
+            var students = await _context.Users.Where(c => usersId.Contains(c.Id)).Select(c => new { c.Id, c.Name }).ToListAsync();
+
+            ViewData["availableAmount"] = availableAmount;
+            ViewData["students"] = new SelectList(students, "Id", "Name");
+
+            return View();
+        }
+
+        // POST
+        [HttpPost]
+        public async Task<IActionResult> TransferMoney([Bind("Amount, ToUserId")] TransferMoneyVM model)
+        {
+            model.FromUserId = userId;
+            return View(model);
+        }
+        
     }
 }
