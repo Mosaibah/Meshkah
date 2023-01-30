@@ -35,21 +35,26 @@ namespace Meshkah.Controllers
             // total money
             // points history
             // money history
-            var pointsTotal = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId).SumAsync(c => c.Point.Amount);
-            var moneyTotal = await _context.MoneyMovements.Where(c => c.UserId == userId).SumAsync(c => c.Amount);
+            ViewData["pointsTotal"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId).SumAsync(c => c.Point.Amount);
 
-            var pointsLog = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId)
+            ViewData["individualPoints"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId && c.Point.TypeId == 1).SumAsync(c => c.Point.Amount);
+
+            ViewData["groupPoints"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId && c.Point.TypeId == 2).SumAsync(c => c.Point.Amount);
+            
+            ViewData["moneyTotal"] = await _context.MoneyMovements.Where(c => c.UserId == userId).SumAsync(c => c.Amount);
+
+            ViewData["pointsLog"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId)
                             .Select(c => new { Name = c.Point.Name, Amount = c.Point.Amount, CreatedAt = c.CreatedAt }).ToListAsync();
 
-            ViewData["pointsTotal"] = pointsTotal;
-            ViewData["moneyTotal"] = moneyTotal;
 
-            var moneylog = await _context.MoneyMovements.Include(c => c.Point).Include(c => c.MoneyTransaction)
+
+
+            ViewData["moneyLog"] = await _context.MoneyMovements.Include(c => c.Point).Include(c => c.MoneyTransaction)
                             .Where(c => c.UserId == userId)
                             .Select(c => new { Amount = c.Amount,  PointName = c.Point.Name , From = c.MoneyTransaction.FromUserId.ToString(), To = c.MoneyTransaction.ToUserId.ToString(), CreatedAt = c.CreatedAt})
                             .ToListAsync();
-            ViewData["pointsLog"] = pointsLog;
-            ViewData["moneyLog"] = moneylog;
+            
+            
 
 
 

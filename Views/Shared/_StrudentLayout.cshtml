@@ -2,11 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>@ViewData["Title"] - Meshkah</title>
+
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Meshkah.styles.css" asp-append-version="true" />
+
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
+
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+
 </head>
 <body>
     <header>
@@ -19,11 +37,11 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if(User.Identity != null && User.Identity.IsAuthenticated)
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="TransferMoney">تحويل المال</a>
                         </li>
-                        @if(User.Identity != null && User.Identity.IsAuthenticated)
-                        {
                             <li class="nav-item">
                                 <a class="btn btn-sm btn-outline-danger"  asp-controller="Auth" asp-action="Logout">تسجيل خروج</a>
                             </li>
@@ -36,19 +54,28 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="py-3">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Meshkah - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - Meshkah
+            @*- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Core -->
+    <script src="~/assets/js/core/popper.min.js"></script>
+    <script src="~/assets/js/core/bootstrap.min.js"></script>
+
+    <!-- Theme JS -->
+    <script src="~/assets/js/soft-ui-dashboard.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

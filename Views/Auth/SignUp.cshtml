@@ -5,11 +5,9 @@
     Layout = "~/Views/Shared/_StrudentLayout.cshtml";
 }
 
-<h1>SingUp</h1>
+<h2 class="text-center font-weight-bolder text-info text-gradient">حساب جديد</h2>
 
-<h4>SignUpVM</h4>
-<hr />
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-4">
         <form asp-action="SignUp" method="POST" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -35,14 +33,14 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="انشاء" class="btn bg-gradient-info w-100 mt-4 mb-0 fs-5" />
             </div>
         </form>
+        <p class="mb-4 text-sm mx-auto">
+            عندك حساب؟
+            <a asp-action="Login" class="text-info text-gradient font-weight-bold">سجل دخول</a>
+        </p>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
