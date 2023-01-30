@@ -33,6 +33,7 @@ jobs:
         command: sudo service Meshkah stop
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
+        passphrase:  ""
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
       
     - name: Copy to Server via SCP
@@ -43,6 +44,7 @@ jobs:
         remote: ${{ secrets.REMOTE_TARGET }}
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
+        passphrase: ""
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
       env:
         ASPNETCORE_ENVIRONMENT: Production
@@ -53,4 +55,5 @@ jobs:
         command: sudo service Meshkah start
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
+        passphrase:  ""
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
