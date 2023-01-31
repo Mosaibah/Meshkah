@@ -4,15 +4,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Meshkah</title>
+    
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Meshkah.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
+
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+    
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.5.0/css/select.dataTables.min.css"/>
-        @await RenderSectionAsync("style", required: false)
+    
+    @await RenderSectionAsync("style", required: false)
 
 </head>
-<body>
+@*<body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -23,18 +42,17 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if(User.IsInRole("Admin"))
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Points" asp-action="Index">البنود</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="PointsTransactions" asp-action="Index">توزيع نقاط</a>
                         </li>
-                        @if(User.IsInRole("Admin"))
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">المستخدمين</a>
                             </li>    
-                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Groups" asp-action="Index">المجموعات</a>
                         </li>
@@ -47,6 +65,7 @@
                         <li class="nav-item">
                             <a class="btn btn-outline-danger" asp-area="" asp-controller="Auth" asp-action="Logout">تسجيل خروج</a>
                         </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -62,10 +81,129 @@
         <div class="container">
             &copy; 2023 - Meshkah - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
+    </footer> *@
+<body class="g-sidenav-show rtl bg-gray-100">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-end me-3 rotate-caret" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute start-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href="https://demos.creative-tim.com/soft-ui-dashboard/pages/dashboard.html" target="_blank">
+        <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="me-1 font-weight-bold">Soft UI Dashboard</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse px-0 w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="Users" asp-action="Index">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">المستخدمين</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="Groups" asp-action="Index">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">المجموعات</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="Points" asp-action="Index">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">البنود</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="PointsTransactions" asp-action="Index">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">توزيع النقاط</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="Users" asp-action="PendingUsers">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">المعلقين</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " asp-controller="GroupTypes" asp-action="Index">
+            <i class="fas fa-users p-1 bg-white shadow border-radius-md text-center ms-2 d-flex align-items-center justify-content-center"></i>
+            <span class="nav-link-text me-1">أنواع المجموعات</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg overflow-hidden">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 ">
+            <li class="breadcrumb-item text-sm ps-2"><a class="opacity-5 text-dark" href="javascript:;">لوحات القيادة</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">RTL</li>
+          </ol>
+          <h6 class="font-weight-bolder mb-0">RTL</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 px-0" id="navbar">
+          <ul class="navbar-nav me-auto ms-0 justify-content-end">
+            <li class="nav-item d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
+                <i class="fa fa-user me-sm-1"></i>
+                <span class="d-sm-inline d-none">يسجل دخول</span>
+              </a>
+            </li>
+            <li class="nav-item d-xl-none pe-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    
+    @RenderBody()
+    
+  </main>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - Meshkah
+            @*- <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
+        </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Core -->
+    <script src="~/assets/js/core/popper.min.js"></script>
+    <script src="~/assets/js/core/bootstrap.min.js"></script>
+
+    <!-- Theme JS -->
+    <script src="~/assets/js/plugins/perfect-scrollbar.min.js"></script>
+    @*<script src="~/assets/js/plugins/smooth-scrollbar.min.js"></script>*@
+    <script src="~/assets/js/plugins/fullcalendar.min.js"></script>
+    <script src="~/assets/js/plugins/chartjs.min.js"></script>
+
+    <script src="~/assets/js/plugins/choices.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+    <script src="~/assets/js/soft-ui-dashboard.min.js"></script>
+    <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/4.2.1/js/dataTables.fixedColumns.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/select/1.5.0/js/dataTables.select.min.js"></script>
