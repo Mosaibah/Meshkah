@@ -43,17 +43,8 @@ namespace Meshkah.Controllers
             
             ViewData["moneyTotal"] = await _context.MoneyMovements.Where(c => c.UserId == userId).SumAsync(c => c.Amount);
 
-            ViewData["pointsLog"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId)
-                            .Select(c => new { Name = c.Point.Name, Amount = c.Point.Amount, CreatedAt = c.CreatedAt }).ToListAsync();
 
-
-
-
-            ViewData["moneyLog"] = await _context.MoneyMovements.Include(c => c.Point).Include(c => c.MoneyTransaction)
-                            .Where(c => c.UserId == userId)
-                            .Select(c => new { Amount = c.Amount,  PointName = c.Point.Name , From = c.MoneyTransaction.FromUserId.ToString(), To = c.MoneyTransaction.ToUserId.ToString(), CreatedAt = c.CreatedAt})
-                            .ToListAsync();
-            
+           
             
 
 
@@ -77,12 +68,79 @@ namespace Meshkah.Controllers
             return View();
         }
 
-        // POST
+        #region POST: TransferMoney
         [HttpPost]
         public async Task<IActionResult> TransferMoney([Bind("Amount, ToUserId")] TransferMoneyVM model)
         {
             model.FromUserId = userId;
+            if (ModelState.IsValid)
+            {
+                var moneyTransaction = new MoneyTransaction()
+                {
+                    Amount = model.Amount,
+                    FromUserId = model.FromUserId,
+                    ToUserId = model.ToUserId,
+
+                };
+                await _context.MoneyTransactions.AddAsync(moneyTransaction);
+                await _context.SaveChangesAsync();
+
+                _context.Add(new MoneyMovement()
+                {
+                    UserId = model.FromUserId,
+                    Amount = -model.Amount,
+                    MoneyTransactionId = moneyTransaction.Id
+
+                });
+                _context.Add(new MoneyMovement()
+                {
+                    UserId = model.ToUserId,
+                    Amount = model.Amount,
+                    MoneyTransactionId = moneyTransaction.Id
+                });
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(model);
+        }
+        #endregion
+
+        public async Task<IActionResult> PointsHistory()
+        {
+            ViewData["pointsLog"] = await _context.PointsTransactions.Include(c => c.Point).Where(c => c.UserId == userId)
+                            .Select(c => new { Name = c.Point.Name, Amount = c.Point.Amount, CreatedAt = c.CreatedAt }).ToListAsync();
+
+            return View();
+        }
+        public async Task<IActionResult> MoneyHistory()
+        {
+            //ViewData["moneyLog"] = await _context.MoneyMovements.Include(c => c.Point).Include(c => c.MoneyTransaction)
+            //               .Where(c => c.UserId == userId)
+            //               .Select(c => new 
+            //               { 
+            //                   Amount = c.Amount, 
+            //                   PointName = c.Point.Name,
+            //                   From = c.MoneyTransaction.FromUserId.ToString(),
+            //                   To = c.MoneyTransaction.ToUserId.ToString(),
+            //                   CreatedAt = c.CreatedAt 
+            //               })
+            //               .ToListAsync();
+            ViewData["transferHistory"] = await _context.MoneyTransactions
+                                        .Include(c => c.FromUser)
+                                        .Include(c => c.ToUser)
+                           .Where(c => c.FromUserId == userId || c.ToUserId == userId)
+                           .Select(c => new
+                           {
+                               Amount = c.Amount,
+                               FromUser = c.FromUser.Name,
+                               ToUser = c.ToUser.Name,
+                               CreatedAt = c.CreatedAt,
+                               IsFromMe = c.FromUserId == userId ? true : false
+                           })
+                           .ToListAsync();
+
+            return View();
         }
         
     }

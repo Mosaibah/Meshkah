@@ -6,34 +6,52 @@
 }
 
 
-<h1>Create</h1>
+<h2>تحويل بنكي</h2>
 
-<h4>Point</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="TransferMoney">
+        <form asp-action="TransferMoney" id="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" type="number" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
+                <span id="error" class="badge bg-gradient-danger d-none mt-2 mt-md-1"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ToUserId" class="control-label"></label>
-                <select asp-for="ToUserId" class ="form-control" asp-items="ViewBag.students"></select>
+                <select asp-for="ToUserId" class ="form-control" asp-items="ViewBag.students">
+                    <option disabled selected>-- اختار --</option>
+                </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="تحويل" class="btn bg-gradient-success" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+
+         $('#form').on('submit', function (e) {
+            var availableAmount = @Json.Serialize(ViewBag.availableAmount);
+            var Amount = document.getElementById('Amount').value 
+
+            if(Amount > availableAmount){
+                const error = document.getElementById("error")
+
+                error.innerHTML = "حساب البنكي لا يكفي لإجراء هذه العملية";
+                error.classList.remove("d-none")
+                return false;
+            }
+
+        });
+
+    </script>
+
 }
