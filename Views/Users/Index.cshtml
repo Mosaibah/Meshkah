@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Meshkah.Models.User>
+﻿@model Meshkah.ViewModels.SearchUsersVM
 
 @{
     ViewData["Title"] = "Index";
@@ -9,56 +9,86 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Groups
-            </th><th>
-                Roles
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @foreach(var group in item.UserGroupMappings)
-                {
-                        <span>- @group.Group.Name </span>
+
+
+<form id="form" asp-action="ListUsers"  method="POST" >
+    <div class="row g-2">
+        @*<div class="offset-1 col-10 offset-md-0 col-sm-4 col-md-3">
+            <label for="Status" class="form-label">Authors</label>
+            <select class="form-select w-100 select2" asp-items="@ViewBag.Authors" asp-for="Authors" multiple></select>
+        </div>*@
+
+        <div class="offset-1 offset-md-3 col-10 mb-5 mt-3 col-md-5 justify-content-center">
+            <button class="btn btn-success  w-100" onclick="Search()">Search</button>
+        </div>
+
+    </div>
+</form>
+
+<div style="max-width:calc(100vm-2rem);overflow-x:scroll">
+
+<table id="usersTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                @*<th>Action</th>*@
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                @*<th>Action</th>*@
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+
+
+@section Scripts{
+    <script>
+
+        window.addEventListener('load', (event) => {
+            Search();
+        });
+
+        $('#form').on('submit', function (e) {
+                    e.preventDefault();  
+         })
+
+        function Search(){
+            $('#usersTable').DataTable( {
+
+            ajax: {
+                url: '/users/ListUsers',
+                type: 'POST',
+                data: {
+                    Id : $("Id").val(),
+                    Name: $("#Name").val()
                 }
-            </td>
-            <td>
-                @foreach(var role in item.UserRoleMappings)
-                {
-                        <span>- @role.Role.Name </span>
-                }
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            },
+            "bDestroy": true,
+            processing: true,
+            serverSide: true,
+            sort: false,
+            filter: false,
+
+            columns: [
+                    { data: 'id' },
+                    { data: 'name' },
+                    { data: 'email' }
+                ]
+            });
+        }
+
+        $('.select2').select2();
+
+    </script>
 }
-    </tbody>
-</table>
+
+              @*  <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@

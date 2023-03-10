@@ -26,8 +26,54 @@ namespace Meshkah.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            List<User> users = await _context.Users.Include(c => c.UserGroupMappings).ThenInclude(c => c.Group).Include(c => c.UserRoleMappings).ThenInclude(c => c.Role).ToListAsync();
-             return View(users);
+            //List<User> users = await _context.Users.Include(c => c.UserGroupMappings).ThenInclude(c => c.Group).Include(c => c.UserRoleMappings).ThenInclude(c => c.Role).ToListAsync();
+             return View();
+        }
+        public async Task<IActionResult> ListUsers(SearchUsersVM model)
+        {
+            var pageSize = Convert.ToInt32(HttpContext.Request.Form["length"].FirstOrDefault() ?? "0");
+            var skip = Convert.ToInt32(Request.Form["start"].FirstOrDefault() ?? "0");
+            var draw = Request.Form["draw"].FirstOrDefault();
+
+            List<User> users = new();
+            var recordsTotal = await _context.Users.CountAsync();
+            var recordsFiltered = 0;
+
+            var countQuotes = await _context.Users.CountAsync();
+            var usersFiltered = _context.Users.Include(c => c.UserRoleMappings).ThenInclude(c => c.Role).Include(c => c.UserGroupMappings).ThenInclude(c => c.Group).AsQueryable();
+
+            //if (model.Authors is not null)
+            //{
+            //    quotesFiltered = quotesFiltered.Where(x => model.Authors.Contains(x.AuthorId.Value));
+            //}
+            //if (model.Text is not null)
+            //{
+            //    quotesFiltered = quotesFiltered.Where(c => c.Text.Contains(model.Text));
+            //}
+            //if (model.StartDate is not null)
+            //{
+            //    quotesFiltered = quotesFiltered.Where(c => c.CreatedAt > model.StartDate);
+            //}
+            //if (model.EndDate is not null)
+            //{
+            //    quotesFiltered = quotesFiltered.Where(c => c.CreatedAt < model.EndDate.Value.AddDays(1));
+            //}
+
+            users = await usersFiltered.Skip(skip).Take(pageSize).ToListAsync();
+            recordsFiltered = await usersFiltered.CountAsync();
+
+            return Json(new
+            {
+                draw = draw,
+                recordsTotal = recordsTotal,
+                recordsFiltered = recordsFiltered,
+                data = users.Select(c => new
+                {
+                    id = c.Id,
+                    name = c.Name,
+                    email = c.Email
+                }).ToList()
+            });
         }
 
         #region Details 
