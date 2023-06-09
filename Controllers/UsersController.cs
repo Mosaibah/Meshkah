@@ -29,6 +29,25 @@ namespace Meshkah.Controllers
             //List<User> users = await _context.Users.Include(c => c.UserGroupMappings).ThenInclude(c => c.Group).Include(c => c.UserRoleMappings).ThenInclude(c => c.Role).ToListAsync();
              return View();
         }
+
+        [HttpGet]
+        [Route("users/list")]
+        public async Task<IActionResult> List()
+        {
+            var users = await _context.Users.Include(c => c.UserRoleMappings).ThenInclude(c => c.Role)
+                .Include(c => c.UserGroupMappings).ThenInclude(c => c.Group).ToListAsync();
+
+
+            return Json(new { data = users.Select(c => new
+            {
+                id = c.Id,
+                name = c.Name,
+                email = c.Email
+            }).ToList()
+            });
+        }
+
+
         public async Task<IActionResult> ListUsers(SearchUsersVM model)
         {
             var pageSize = Convert.ToInt32(HttpContext.Request.Form["length"].FirstOrDefault() ?? "0");
